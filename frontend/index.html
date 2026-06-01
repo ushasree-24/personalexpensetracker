@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WalletWise | AI-Powered Personal Expense Tracker</title>
+  <meta name="description" content="Manage your personal finances and track budgets with WalletWise, your offline and Gemini-powered smart financial coach.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- DESKTOP SIDEBAR -->
+    <nav class="sidebar" id="sidebar-navigation">
+      <div class="logo-section">
+        <div class="logo-icon">W</div>
+        <span class="logo-text">WalletWise</span>
+      </div>
+      
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a class="nav-link active" data-view="dashboard" id="nav-dash">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="transactions" id="nav-txns">
+            <i data-lucide="receipt"></i>
+            <span>Transactions</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="budgets" id="nav-budgets">
+            <i data-lucide="pie-chart"></i>
+            <span>Budgets</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="coach" id="nav-coach">
+            <i data-lucide="sparkles"></i>
+            <span>AI Coach</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="settings" id="nav-settings">
+            <i data-lucide="settings"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="user-widget">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="avatar" id="user-avatar">U</div>
+          <div class="user-info">
+            <span class="username" id="display-username">User</span>
+            <span class="user-status">
+              <span class="status-dot"></span>
+              <span id="db-status-text">Sync Active</span>
+            </span>
+          </div>
+        </div>
+        <button class="action-btn" id="sidebar-logout-btn" title="Sign Out" style="color: var(--danger); padding: 6px; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-left: auto;">
+          <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="mobile-nav" id="mobile-navigation">
+      <a class="mobile-nav-link active" data-view="dashboard" id="m-nav-dash">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="mobile-nav-link" data-view="transactions" id="m-nav-txns">
+        <i data-lucide="receipt"></i>
+        <span>Txns</span>
+      </a>
+      <a class="mobile-nav-link" data-view="budgets" id="m-nav-budgets">
+        <i data-lucide="pie-chart"></i>
+        <span>Budgets</span>
+      </a>
+      <a class="mobile-nav-link" data-view="coach" id="m-nav-coach">
+        <i data-lucide="sparkles"></i>
+        <span>Coach</span>
+      </a>
+      <a class="mobile-nav-link" data-view="settings" id="m-nav-settings">
+        <i data-lucide="settings"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <!-- MAIN APP VIEWPORTS -->
+    <main class="main-content">
+      
+      <!-- TOP HEADER BAR -->
+      <header class="top-header">
+        <div class="header-title">
+          <h1 id="page-title">Financial Dashboard</h1>
+          <p id="page-subtitle">Welcome back, see your financial pulse here.</p>
+        </div>
+        <div class="header-actions">
+          <!-- QUICK AI ADD BAR -->
+          <div class="quick-ai-bar glass-panel" id="ai-quick-add-container">
+            <i data-lucide="sparkles" style="color: var(--accent-secondary); margin-left: 0.5rem;"></i>
+            <input type="text" id="ai-quick-input" placeholder="Type: 'Spent ₹150 on Starbucks UPI yesterday'...">
+            <button class="btn btn-primary" id="ai-quick-btn" title="Add with AI" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+              <span>Add</span>
+            </button>
+          </div>
+          <button class="btn btn-primary" id="global-add-expense-btn">
+            <i data-lucide="plus"></i>
+            <span>Add Expense</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- ==================== VIEW: DASHBOARD ==================== -->
+      <section class="view-panel active" id="view-dashboard">
+        
+        <!-- KPI METRICS CARD ROW -->
+        <div class="kpi-container">
+          <article class="kpi-card glass-panel kpi-balance">
+            <div class="kpi-card-header">
+              <span>NET INCOME</span>
+              <i data-lucide="wallet"></i>
+            </div>
+            <div class="kpi-value" id="kpi-net-balance">₹0.00</div>
+            <div class="kpi-subtext">Remaining from your income</div>
+          </article>
+          
+          <article class="kpi-card glass-panel kpi-income">
+            <div class="kpi-card-header">
+              <span>MONTHLY INCOME</span>
+              <i data-lucide="arrow-down-left"></i>
+            </div>
+            <div class="kpi-value" id="kpi-monthly-income">₹0.00</div>
+            <div class="kpi-subtext">Adjust in Settings</div>
+          </article>
+          
+          <article class="kpi-card glass-panel kpi-expenses">
+            <div class="kpi-card-header">
+              <span>TOTAL EXPENSES</span>
+              <i data-lucide="arrow-up-right"></i>
+            </div>
+            <div class="kpi-value" id="kpi-total-expenses">₹0.00</div>
+            <div class="kpi-subtext">This month's expenditure</div>
+          </article>
+          
+          <article class="kpi-card glass-panel kpi-savings">
+            <div class="kpi-card-header">
+              <span>SAVINGS RATE</span>
+              <i data-lucide="piggy-bank"></i>
+            </div>
+            <div class="kpi-value" id="kpi-savings-rate">0%</div>
+            <div class="kpi-subtext">Target: <span>20%+ Savings</span></div>
+          </article>
+        </div>
+
+        <!-- ANALYTICS CHARTS SECTION -->
+        <div class="analytics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+          
+          <!-- Monthly Expenses Trend Chart -->
+          <div class="chart-card glass-panel">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="trending-up"></i>
+                <span>Monthly Expenses Trend</span>
+              </h2>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="expensesTrendChart"></canvas>
+            </div>
+          </div>
+          
+          <!-- Category Wise Spending Chart -->
+          <div class="chart-card glass-panel">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="pie-chart"></i>
+                <span>Category Breakdown</span>
+              </h2>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="categoryBreakdownChart"></canvas>
+            </div>
+          </div>
+          
+          <!-- Income vs Expense Chart -->
+          <div class="chart-card glass-panel">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="bar-chart-3"></i>
+                <span>Income vs Expense</span>
+              </h2>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="incomeVsExpenseChart"></canvas>
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- CONTENT SECTION: RECENT TRANSACTIONS & BUDGET STATUS -->
+        <div class="dashboard-grid">
+          
+          <!-- Recent Transactions -->
+          <div class="chart-card glass-panel">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="history"></i>
+                <span>Recent Transactions</span>
+              </h2>
+              <button class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" id="dashboard-view-all-txns">
+                <span>View All</span>
+              </button>
+            </div>
+            <div class="recent-expenses-list" id="dashboard-recent-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+          
+          <!-- Budget Previews -->
+          <div class="chart-card glass-panel">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="pie-chart"></i>
+                <span>Budget Status</span>
+              </h2>
+              <a class="kpi-subtext" style="color: var(--accent-primary); text-decoration: none; cursor: pointer;" data-view="budgets">Manage</a>
+            </div>
+            <div class="budget-list" id="dashboard-budget-preview">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+          
+        </div>
+
+      </section>
+
+      <!-- ==================== VIEW: TRANSACTIONS ==================== -->
+      <section class="view-panel" id="view-transactions">
+        
+        <div class="chart-card glass-panel">
+          <!-- Filter options -->
+          <div class="filter-row">
+            <div class="search-input">
+              <i data-lucide="search" style="color: var(--text-muted);"></i>
+              <input type="text" id="txn-search" placeholder="Search by title or notes...">
+            </div>
+            
+            <!-- Filter by Month -->
+            <input type="month" class="filter-select" id="txn-filter-date" title="Filter by Month">
+            
+            <select class="filter-select" id="txn-filter-category">
+              <option value="ALL">All Categories</option>
+              <option value="Food">Food</option>
+              <option value="Travel">Travel</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Education">Education</option>
+              <option value="Medical">Medical</option>
+              <option value="Bills">Bills</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Others">Others</option>
+            </select>
+            
+            <select class="filter-select" id="txn-filter-sort">
+              <option value="date-desc">Newest First</option>
+              <option value="date-asc">Oldest First</option>
+              <option value="amount-desc">Amount: High to Low</option>
+              <option value="amount-asc">Amount: Low to High</option>
+            </select>
+            
+            <button class="btn btn-primary" id="txn-add-btn">
+              <i data-lucide="plus"></i>
+              <span>New Transaction</span>
+            </button>
+          </div>
+          
+          <!-- Table -->
+          <div class="table-wrapper">
+            <table class="txn-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Title & Notes</th>
+                  <th>Category</th>
+                  <th>Payment Method</th>
+                  <th>Amount</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="txn-table-body">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==================== VIEW: BUDGETS ==================== -->
+      <section class="view-panel" id="view-budgets">
+        
+        <div class="dashboard-grid">
+          
+          <!-- LEFT: PROGRESS OVERVIEW -->
+          <div class="chart-card glass-panel">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="sliders"></i>
+                <span>Category Budgets Audit</span>
+              </h2>
+            </div>
+            <div class="budget-list" id="budget-page-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+          
+          <!-- RIGHT: UPDATE BUDGETS CARD -->
+          <div class="chart-card glass-panel" style="height: fit-content;">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="edit-3"></i>
+                <span>Set Budget Limits</span>
+              </h2>
+            </div>
+            <form id="budget-update-form" style="display: flex; flex-direction: column; gap: 1rem;">
+              <div class="form-group">
+                <label for="budget-category-select">Select Category</label>
+                <select class="form-input" id="budget-category-select" required>
+                  <option value="Food">Food</option>
+                  <option value="Travel">Travel</option>
+                  <option value="Shopping">Shopping</option>
+                  <option value="Education">Education</option>
+                  <option value="Medical">Medical</option>
+                  <option value="Bills">Bills</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="budget-limit-input" id="label-budget-limit-input">Budget Limit Amount (₹)</label>
+                <input type="number" class="form-input" id="budget-limit-input" placeholder="e.g. 5000" min="0" required>
+              </div>
+              
+              <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%;">
+                <i data-lucide="check"></i>
+                <span>Save Budget Limit</span>
+              </button>
+            </form>
+          </div>
+          
+        </div>
+
+      </section>
+
+      <!-- ==================== VIEW: AI COACH ==================== -->
+      <section class="view-panel" id="view-coach">
+        
+        <div class="ai-coach-container">
+          
+          <!-- COACH BIO & METRICS PROFILE -->
+          <div class="ai-profile-card glass-panel">
+            <div class="ai-avatar-large">✨</div>
+            <div>
+              <h2 style="font-weight: 700; font-size: 1.5rem; margin-bottom: 0.25rem;">WalletWise</h2>
+              <p style="color: var(--accent-secondary); font-weight: 600; font-size: 0.9rem; margin-bottom: 1rem;">AI Financial Coach</p>
+              <p class="kpi-subtext" style="line-height: 1.5;">I review your actual budget logs and provide strategies to boost your savings rate.</p>
+            </div>
+            
+            <div style="width: 100%; border-top: 1px solid var(--card-border); padding-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; text-align: left;">
+              <h4 style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">WalletWise Capabilities</h4>
+              <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+                <i data-lucide="check" style="color: var(--success); width: 16px;"></i>
+                <span>Automated Budget Audit</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+                <i data-lucide="check" style="color: var(--success); width: 16px;"></i>
+                <span>Savings Analysis</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+                <i data-lucide="check" style="color: var(--success); width: 16px;"></i>
+                <span>Gemini Open Conversational AI</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- CHAT WINDOW -->
+          <div class="chart-card glass-panel chat-box">
+            <div class="card-header" style="border-bottom: 1px solid var(--card-border); padding-bottom: 1rem;">
+              <h2 class="card-title">
+                <i data-lucide="message-square"></i>
+                <span>Consult with WalletWise</span>
+              </h2>
+              <span class="kpi-subtext" id="ai-engine-status-tag" style="background: rgba(223, 182, 178, 0.15); padding: 2px 8px; border-radius: 20px; color: var(--accent-primary);">Local Engine</span>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages-container">
+              <!-- Initial message -->
+              <div class="message-bubble message-ai">
+                <p>Hello! I am <strong>WalletWise</strong>, your AI Financial Coach. 📊</p>
+                <p>I can analyze your transactions and budgets to find saving opportunities. Try asking me:</p>
+                <ul>
+                  <li><em>"How is my budget doing?"</em></li>
+                  <li><em>"Give me a spending summary"</em></li>
+                  <li><em>"Give me savings tips"</em></li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="chat-input-row">
+              <input type="text" id="chat-input-field" placeholder="Ask WalletWise: 'Am I overspending?' or 'How can I save?'...">
+              <button class="btn btn-primary" id="chat-send-btn" title="Send Message">
+                <i data-lucide="send"></i>
+              </button>
+            </div>
+          </div>
+          
+        </div>
+
+      </section>
+
+      <!-- ==================== VIEW: SETTINGS ==================== -->
+      <section class="view-panel" id="view-settings">
+        
+        <div class="settings-grid">
+          
+          <!-- PROFILE SETTINGS -->
+          <div class="chart-card glass-panel settings-card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="user"></i>
+                <span>Profile & Income</span>
+              </h2>
+            </div>
+            
+            <div class="form-group">
+              <label for="settings-username">Your Name</label>
+              <input type="text" class="form-input" id="settings-username" placeholder="e.g. Rahul Sharma">
+            </div>
+            
+            <div class="form-group">
+              <label for="settings-income" id="label-settings-income">Monthly Regular Income (₹)</label>
+              <input type="number" class="form-input" id="settings-income" placeholder="e.g. 50000" min="0">
+            </div>
+
+            <!-- Preferred Currency Selector -->
+            <div class="form-group">
+              <label for="settings-currency">Preferred Currency</label>
+              <select class="form-input" id="settings-currency">
+                <option value="INR">INR (₹) - Indian Rupee</option>
+                <option value="USD">USD ($) - US Dollar</option>
+                <option value="EUR">EUR (€) - Euro</option>
+                <option value="GBP">GBP (£) - British Pound</option>
+                <option value="JPY">JPY (¥) - Japanese Yen</option>
+              </select>
+            </div>
+            
+            <button class="btn btn-primary" id="save-profile-btn" style="width: 100%;">
+              <i data-lucide="save"></i>
+              <span>Save Profile Config</span>
+            </button>
+          </div>
+          
+          <!-- AI ENGINE SETTINGS -->
+          <div class="chart-card glass-panel settings-card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="cpu"></i>
+                <span>AI Engine Settings</span>
+              </h2>
+            </div>
+            
+            <div class="switch-group">
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span style="font-weight: 600; font-size: 0.95rem;">Enable Google Gemini AI</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary);">Toggle off to use offline parsing & rules (Free)</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="settings-gemini-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            
+            <div class="form-group" id="gemini-key-container" style="display: none;">
+              <label for="settings-gemini-key">Gemini API Key</label>
+              <input type="password" class="form-input" id="settings-gemini-key" placeholder="AIzaSy...">
+              <p class="kpi-subtext" style="margin-top: 0.25rem;">Key is stored locally in your browser storage and never sent to third-party databases.</p>
+            </div>
+            
+            <button class="btn btn-primary" id="save-ai-btn" style="width: 100%;">
+              <i data-lucide="check"></i>
+              <span>Save AI Configuration</span>
+            </button>
+          </div>
+          
+          <!-- DATA MAINTENANCE -->
+          <div class="chart-card glass-panel settings-card" style="grid-column: 1 / -1;">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i data-lucide="database"></i>
+                <span>Maintenance & Exports</span>
+              </h2>
+            </div>
+            <p class="kpi-subtext">Manage database integrity, download offline copies of your statements, or wipe settings.</p>
+            
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
+              <button class="btn btn-secondary" id="export-json-btn">
+                <i data-lucide="download"></i>
+                <span>Export JSON</span>
+              </button>
+              <button class="btn btn-secondary" id="export-csv-btn">
+                <i data-lucide="file-spreadsheet"></i>
+                <span>Export CSV</span>
+              </button>
+              <button class="btn btn-danger" id="reset-db-btn" style="margin-left: auto;">
+                <i data-lucide="trash-2"></i>
+                <span>Clear Account Data</span>
+              </button>
+              <button class="btn btn-secondary" id="settings-logout-btn" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.25); background: rgba(239, 68, 68, 0.05);">
+                <i data-lucide="log-out"></i>
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+          
+        </div>
+
+      </section>
+
+      <!-- FOOTER -->
+      <footer style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--card-border); text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+        <p>&copy; 2026 WalletWise. Fully responsive native frameworkless design.</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ADD / EDIT TRANSACTION MODAL -->
+  <div class="modal-overlay" id="modal-expense">
+    <div class="modal-box glass-panel">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-expense-title">Add New Transaction</h3>
+        <button class="close-btn" id="modal-expense-close">&times;</button>
+      </div>
+      
+      <form id="modal-expense-form">
+        <!-- Hidden input for ID when editing -->
+        <input type="hidden" id="expense-id">
+        
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="form-group">
+            <label for="expense-amount" id="label-expense-amount">Amount (₹) *</label>
+            <input type="number" step="0.01" class="form-input" id="expense-amount" placeholder="0.00" min="0.01" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="expense-category">Category *</label>
+            <select class="form-input" id="expense-category" required>
+              <option value="Food">Food</option>
+              <option value="Travel">Travel</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Education">Education</option>
+              <option value="Medical">Medical</option>
+              <option value="Bills">Bills</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="expense-title">Title *</label>
+            <input type="text" class="form-input" id="expense-title" placeholder="e.g. Weekly grocery check" required>
+          </div>
+
+          <div class="form-group">
+            <label for="expense-payment">Payment Method *</label>
+            <select class="form-input" id="expense-payment" required>
+              <option value="Cash">Cash</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Debit Card">Debit Card</option>
+              <option value="UPI">UPI</option>
+              <option value="Net Banking">Net Banking</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="expense-date">Date *</label>
+            <input type="date" class="form-input" id="expense-date" required>
+          </div>
+
+          <div class="form-group">
+            <label for="expense-notes">Notes</label>
+            <textarea class="form-input" id="expense-notes" placeholder="e.g. Purchase details, store location..." rows="2"></textarea>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="expense-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="expense-submit-btn">Save Transaction</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== VIEW: AUTHENTICATION ==================== -->
+  <div class="auth-container" id="view-auth" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-primary); background-image: radial-gradient(circle at 50% 50%, rgba(223, 182, 178, 0.15) 0%, transparent 60%); align-items: center; justify-content: center; z-index: 5000; padding: 1.5rem; overflow-y: auto;">
+    <div class="auth-box glass-panel" style="width: 100%; max-width: 440px; padding: 2.5rem; display: flex; flex-direction: column; gap: 1.5rem; box-shadow: var(--shadow-glow), var(--shadow-card);">
+      <div class="auth-header" style="text-align: center;">
+        <div class="logo-icon" style="margin: 0 auto 1.25rem auto; width: 52px; height: 52px; font-size: 1.6rem;">W</div>
+        <h2 id="auth-title" style="font-size: 1.6rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Welcome to WalletWise</h2>
+        <p id="auth-subtitle" style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.35rem;">Sign in to track your personal expenses</p>
+      </div>
+      
+      <!-- LOGIN FORM -->
+      <form id="auth-login-form">
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="form-group">
+            <label for="login-email">Email Address</label>
+            <input type="email" class="form-input" id="login-email" placeholder="name@domain.com" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top: 0.75rem; width: 100%;">
+            <span>Sign In</span>
+          </button>
+        </div>
+      </form>
+      
+      <!-- REGISTER FORM (Initially Hidden) -->
+      <form id="auth-register-form" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="form-group">
+            <label for="register-username">Full Name</label>
+            <input type="text" class="form-input" id="register-username" placeholder="e.g. Rahul Sharma" required>
+          </div>
+          <div class="form-group">
+            <label for="register-email">Email Address</label>
+            <input type="email" class="form-input" id="register-email" placeholder="name@domain.com" required>
+          </div>
+          <div class="form-group">
+            <label for="register-password">Password (min 6 characters)</label>
+            <input type="password" class="form-input" id="register-password" placeholder="••••••••" minlength="6" required>
+          </div>
+          <div class="form-group">
+            <label for="register-income">Monthly Income (₹)</label>
+            <input type="number" class="form-input" id="register-income" placeholder="e.g. 50000" min="0" value="50000" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top: 0.75rem; width: 100%;">
+            <span>Create Account</span>
+          </button>
+        </div>
+      </form>
+      
+      <!-- TOGGLE LINK -->
+      <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; border-top: 1px solid var(--card-border); padding-top: 1.25rem;">
+        <span id="auth-toggle-text" style="color: var(--text-secondary);">Don't have an account? </span>
+        <a id="auth-toggle-btn" style="color: var(--accent-primary); text-decoration: none; font-weight: 600; cursor: pointer; transition: color var(--transition-fast);">Register here</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide Icons Library & ChartJS Library -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Main App scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>

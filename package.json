@@ -1,0 +1,25 @@
+{
+  "name": "personal-expense-tracker-root",
+  "version": "1.0.0",
+  "description": "Root runner for Aura AI Personal Expense Tracker",
+  "scripts": {
+    "install:all": "npm.cmd install && npm.cmd install --prefix backend && npm.cmd install --prefix frontend",
+    "dev:backend": "npm.cmd run dev --prefix backend",
+    "dev:frontend": "npm.cmd run dev --prefix frontend",
+    "dev": "concurrently \"npm.cmd run dev --prefix backend\" \"npm.cmd run dev --prefix frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.1.1",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^6.21.0",
+    "mongoose": "^9.6.3"
+  }
+}
