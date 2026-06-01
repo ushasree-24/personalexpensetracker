@@ -2,10 +2,10 @@
   "name": "aura-backend",
   "version": "1.0.0",
   "description": "Aura Express API Server",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.js"
+    "start": "node app.js",
+    "dev": "node app.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.1",
