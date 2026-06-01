@@ -1,6 +1,6 @@
-# Aura Finance: AI-Powered Personal Expense Tracker
+# WALLETWISE: AI-Powered Personal Expense Tracker
 
-Aura is a fully responsive, premium full-stack **Personal Expense Tracker** application built using **native HTML5, CSS3, and JavaScript** (no frontend frameworks) on the frontend, and a lightweight **Node.js + Express** API backend. It features an interactive **AI Financial Coach (Aura)** and a dynamic database connection layer.
+Aura is a fully responsive, premium full-stack **Personal Expense Tracker** application built using **native HTML5, CSS3, and JavaScript** (no frontend frameworks) on the frontend, and a lightweight **Node.js + Express** API backend. It features an interactive **AI Financial Coach ** and a dynamic database connection layer.
 
 ## Key Features
 * 📊 **Interactive Dashboard:** Dynamic KPI indicators for monthly income, expenses, and savings rate. Uses an interactive **Chart.js** line chart displaying cumulative spending trends.
