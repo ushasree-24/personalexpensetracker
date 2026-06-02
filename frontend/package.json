@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Aura Client SPA",
   "scripts": {
-    "start": "serve -l 5000 public",
-    "dev": "serve -l 5000 public"
+    "start": "serve -l 5000 .",
+    "dev": "serve -l 5000 ."
   },
   "dependencies": {
     "serve": "^14.2.3"
