@@ -39,7 +39,7 @@ app.get('/api/status', (req, res) => {
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, email, password, income } = req.body;
-    
+
     if (!username || !email || !password) {
       return res.status(400).json({ error: "Username, email, and password are required fields." });
     }
@@ -76,7 +76,7 @@ app.post('/api/auth/register', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    
+
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required fields." });
     }
@@ -145,13 +145,13 @@ app.post('/api/expenses', auth.authMiddleware, async (req, res) => {
     if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
       return res.status(400).json({ error: "Invalid amount. Must be a positive number." });
     }
-    
+
     const transactionTitle = title || description || "Expense";
 
-    const newExp = await db.addExpense(req.user.userId, { 
-      amount, 
-      category, 
-      title: transactionTitle, 
+    const newExp = await db.addExpense(req.user.userId, {
+      amount,
+      category,
+      title: transactionTitle,
       date,
       paymentMethod,
       notes
@@ -170,18 +170,18 @@ app.put('/api/expenses/:id', auth.authMiddleware, async (req, res) => {
     if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
       return res.status(400).json({ error: "Invalid amount. Must be a positive number." });
     }
-    
+
     const transactionTitle = title || description || "Expense";
 
-    const updated = await db.updateExpense(req.user.userId, id, { 
-      amount, 
-      category, 
-      title: transactionTitle, 
+    const updated = await db.updateExpense(req.user.userId, id, {
+      amount,
+      category,
+      title: transactionTitle,
       date,
       paymentMethod,
       notes
     });
-    
+
     if (!updated) {
       return res.status(404).json({ error: "Expense not found or unauthorized access" });
     }
@@ -268,6 +268,11 @@ app.post('/api/ai/chat', auth.authMiddleware, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "AI Chat failed", message: err.message });
   }
+});
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Aura Finance API running on port ${PORT}`);
 });
 
 module.exports = app;
